@@ -1,10 +1,11 @@
 <template>
     <div class="app">
-        <div class="app-header">
+        <div class="app-header" >
             <img class="app-header-img" :src="users[0].picture.medium"/>
             <p class="app-header-text">{{users[0].name.first}}</p>
+            <span @click="toggleChat" class="material-icons md-18 app-header-icon">close</span>
         </div>
-        <div class="app-container">
+        <div class="app-container" :class="{'closed': isClosed}">
             <Message
                 v-for="message in messages"
                 :key="message.id"
@@ -38,7 +39,8 @@ export default {
                 "Sorry, I didn't understand",
                 "Beautiful wheather today, isn't it?",
                 "Have a nice day, bye!",
-            ]
+            ],
+            isClosed: false,
         }
     },
     async mounted() {
@@ -63,6 +65,9 @@ export default {
     },
     methods: {
         ...mapActions(["getUser", "sendMessage"]),
+        toggleChat() {
+            this.isClosed = !this.isClosed;
+        },
         onSubmit() {
             if (this.text.trim() !== "") {
                 const message = this.generateMessage(this.text, this.users[1], true);
@@ -122,6 +127,16 @@ export default {
     align-items: center;
     padding: 5px 0 0 10px;
     color: #fff;
+    position: relative;
+    margin-bottom: 1px;
+}
+
+.app-header-icon  {
+    position: absolute;
+    top: 20px;
+    right: 14px;
+    font-size: 30px;
+    cursor: pointer;
 }
 
 .app-header-img {
@@ -145,6 +160,12 @@ export default {
     width: 100%;
     border-left: 1px solid #e9ecef;
     padding: 5px 0 0 10px;
+    transition: height 0.5s;
+}
+
+.closed {
+    height: 0;
+    padding: 0 0 0 10px;
 }
 
 .app-container::-webkit-scrollbar {
